@@ -12,11 +12,6 @@
   transition: transform 0.3s ease;
 }
 
-.scaleProgress:hover {
-  transform: scaleY(1.5);
-  transition: transform 0.3s ease;
-}
-
-.prev-segment-div {
-  z-index: 90;
+.disable-hover {
+  pointer-events: none;
 }

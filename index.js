@@ -19,7 +19,7 @@ var player = videojs(
         "com.widevine.alpha": "https://cwip-shaka-proxy.appspot.com/no_auth",
       },
     });
-    // player.play();
+    const x = player.play();
     const segmentObj = {
       1: {
         start: 0,
@@ -47,6 +47,7 @@ var player = videojs(
         segmentTitle: "Segment 5",
       },
     };
+
     setTimeout(() => {
       const vedioProgressBar = document.getElementsByClassName(
         "vjs-progress-holder"
@@ -56,13 +57,13 @@ var player = videojs(
       const vedioProgressBarWidth = vedioProgressBar.clientWidth;
       const totalDuration = player.duration();
       const pixelPerSecond = vedioProgressBarWidth / totalDuration;
-      const segmentDiv = document.createElement("div");
-      const prevSegmentDiv = document.createElement("div");
-      segmentDiv.className = "segment-div";
-      prevSegmentDiv.className = "prev-segment-div";
-      segmentDiv.style.width = vedioProgressBarWidth + "px";
-      vedioProgressBar.appendChild(segmentDiv);
-      vedioProgressBar.appendChild(prevSegmentDiv);
+      // const segmentDiv = document.createElement("div");
+      // segmentDiv.className = "segment-div";
+      // segmentDiv.style.width = vedioProgressBarWidth + "px";
+      // vedioProgressBar.appendChild(segmentDiv);
+      vedioPlayProgress.style.zIndex = "30";
+      vedioProgressBar.style.display = "flex";
+      vedioPlayProgress.classList.add("disable-hover");
       for (let i = 1; i <= Object.keys(segmentObj).length; i++) {
         const segment = document.createElement("div");
         segment.className = `segment-${i} scale`;
@@ -76,29 +77,38 @@ var player = videojs(
           segment.style.cursor = "pointer";
           segment.style.backgroundColor = "rgba(115,133,159, 1)";
           segment.style.zIndex = "0";
-          vedioPlayProgress.classList.add("scaleProgress");
-          vedioPlayProgress.style.zIndex = "20";
-
-          prevSegmentDiv.innerHTML = "";
-          for (let j = 1; j < i + 1; j++) {
-            const prevEle = document.createElement("div");
-            prevEle.className = `segment-${j} scale`;
-            prevEle.style.border = "0px";
-            prevEle.style.borderRight = "3px solid rgba(43,51,63,.7)";
-            prevEle.style.height = "0.3em";
-            prevEle.style.zIndex = "15";
-            prevSegmentDiv.appendChild(prevEle);
-          }
         });
         segment.addEventListener("mouseout", () => {
           segment.style.backgroundColor = "transparent";
           segment.style.scale = "1";
           segment.style.zIndex = "15";
-          vedioPlayProgress.classList.remove("scaleProgress");
-          vedioPlayProgress.style.zIndex = "0";
         });
-        segmentDiv.appendChild(segment);
+        // segmentDiv.appendChild(segment);
+        vedioProgressBar.appendChild(segment);
       }
     }, 5000);
+
+    function updateSegmentStyles() {
+      const currentTime = player.currentTime();
+
+      console.log(currentTime);
+
+      for (let i = 1; i <= Object.keys(segmentObj).length; i++) {
+        const segment = document.querySelector(`.segment-${i}`);
+
+        if (currentTime >= segmentObj[i].end) {
+          // Update styles when the segment's time ends
+          segment.style.zIndex = "50";
+          segment.style.borderRight = "3px solid rgba(43,51,63,1)";
+        } else {
+          // Reset styles for segments that haven't reached their end time
+          segment.style.zIndex = "15";
+          segment.style.borderRight = "3px solid rgba(43,51,63,.7)";
+        }
+      }
+    }
+
+    // Periodically check the video's current time for updates
+    setInterval(updateSegmentStyles, 500); // Check every 500 milliseconds (adjust as needed)
   }
 );

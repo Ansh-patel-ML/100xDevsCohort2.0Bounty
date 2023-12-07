@@ -1,0 +1,22 @@
+.segment-div,
+.prev-segment-div {
+  background-color: 1px solid rgba(115, 133, 159, 0.9);
+  display: flex;
+  align-items: center;
+  position: absolute;
+  z-index: 10;
+}
+
+.scale:hover {
+  transform: scaleY(1.5);
+  transition: transform 0.3s ease;
+}
+
+.scaleProgress:hover {
+  transform: scaleY(1.5);
+  transition: transform 0.3s ease;
+}
+
+.prev-segment-div {
+  z-index: 90;
+}
